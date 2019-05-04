@@ -1,0 +1,190 @@
+﻿@model EmpresaXpto.UI.Web.Models.ClienteViewModel
+
+@{
+    ViewBag.Title = "Index";
+}
+
+<h2>Incluir Clientes</h2>
+<form id="form" enctype="multipart/form-data" action="@Url.Action("IncluirCliente", "Cliente")" method="post">
+    @*@using (Html.BeginForm("IncluirCliente", "Cliente", FormMethod.Post, new { enctype = "multipart/form-data", id = "formCliente" }))
+        {*@
+    @Html.TextBoxFor(model => model.Arquivo, new { @class = "form-control", @type = "file", @id = "arquivo" })
+    <input type="submit" value="Importar" id="file">
+    @*}*@
+</form>
+<button class="open-alert button">alert</button>
+<div id="modal-alert" data-izimodal-title="Xpto" data-izimodal-subtitle="Arquivo importado com sucesso!"></div>
+
+<button class="open-options button">options</button>
+<div id="modal-options" data-izimodal-group="group1" data-izimodal-loop="" data-izimodal-title="Empresa Xpto" data-izimodal-subtitle=" ">
+    <p>Arquivo importado com sucesso!</p>
+</div>
+
+<style>
+    .button {
+        display: inline-block;
+        margin: 20px;
+        padding: 10px 20px;
+        background: #fff;
+        border: 1px #333 solid;
+        font-size: 14px;
+        color: #333;
+    }
+
+    a {
+        font-size: 14px;
+        color: #333;
+        text-decoration: none;
+    }
+
+    .close {
+        text-align: right;
+        padding: 10px;
+    }
+
+    p {
+        padding: 20px;
+        line-height: 1.6;
+    }
+
+    video {
+        width: 100%;
+        height: auto;
+    }
+</style>
+
+<script>
+
+  $('#form').submit(function(e) {
+    e.preventDefault(); // stop the standard form submission
+
+    $.ajax({
+        url: this.action,
+        type: this.method,
+        data: new FormData(this),
+        cache: false,
+        contentType: false,
+        processData: false,
+        success: function (data) {
+            debugger
+                $('#modal-alert').iziModal('open');
+        },
+        error: function(xhr, error, status) {
+            console.log(error, status);
+        }
+    });
+});
+
+    @*function Enviar() {
+        debugger;
+
+    $.ajax({
+        cache: false,
+        type: 'POST',
+        url: '@Href("~/Cliente/IncluirCliente")',
+        data: formData,
+        success: function (data) {
+            debugger;
+            if (data.tipo === "Erro") {
+                var objMensagem = { "MensagemTipo": "Erro", "Mensagem": data.mensagem };
+                mostrarMensagem(objMensagem);
+            } else {
+                var $tipoMensagem = 'Sucesso';
+                var $mensagem = data.mensagem;
+
+                if ($mensagem === undefined) {
+
+                }
+                else {
+                    var objMensagem = { 'MensagemTipo': $tipoMensagem, 'Mensagem': $mensagem };
+                    mostrarMensagem(objMensagem);
+
+                }
+
+            }
+        },
+        complete: function () {
+
+        },
+        error: function (data) {
+            var objMensagem = { "MensagemTipo": "Erro", "Mensagem": 'mensagem' };
+            mostrarMensagem(objMensagem);
+        }
+    });
+}*@
+
+
+    //Alert
+    $('#modal-alert').iziModal({
+        headerColor: '#388E3C',
+        width: 500,
+        timeout: 5000,
+        pauseOnHover: true,
+        timeoutProgressbar: true,
+        attached: 'bottom'
+    });
+
+    $(document).on('click', '.open-alert', function (event) {
+        event.preventDefault();
+        $('#modal-alert').iziModal('open');
+    });
+
+    //options
+    $(document).on('click', '.open-options', function (event) {
+        event.preventDefault();
+        $('#modal-options').iziModal('open');
+    });
+
+    $('#modal-options').iziModal({
+        headerColor: '#26A69A',
+        width: '50%',
+        overlayColor: 'rgba(0, 0, 0, 0.5)',
+        fullscreen: false,
+        transitionIn: 'fadeInUp',
+        transitionOut: 'fadeOutDown'
+    });
+
+function openLoader() {
+    $('body').append('<div class="ui-widget-overlay ui-front overlay-carregando"><div class="loader center">Carregando...</div></div>');
+}
+
+function saveLoader() {
+    $('body').append('<div class="ui-widget-overlay ui-front overlay-carregando"><div class="loader center">Salvando...</div></div>');
+}
+
+function closeLoader() {
+    $(".overlay-carregando").remove();
+}
+
+function deleteLoader() {
+    $('body').append('<div class="ui-widget-overlay ui-front overlay-carregando"><div class="loader center">Excluindo...</div></div>');
+        }
+
+        function mostrarMensagem(data) {
+
+    if (data.MensagemTipo === "Sucesso") {
+        mostrarMensagemSucesso(data);
+    } else if (data.MensagemTipo === "Erro") {
+        mostrarMensagemErro(data);
+    }
+}
+
+///Mostra a mensagem de sucesso
+function mostrarMensagemSucesso(data) {
+    if (data.Mensagem != null && data.Mensagem !== "") {
+        $("#divSucessoDialogo p").html("<img src='../images/icone_msn_sucesso.png' />&nbsp;&nbsp;" + data.Mensagem);
+        $("#divSucessoDialogo").modal("show");
+    }
+}
+
+///Mostra a mensagem de erro
+function mostrarMensagemErro(data) {
+    if (data.Mensagem != null && data.Mensagem !== "") {
+
+        $("#divErrorDialogo p").html("<img src='../images/icone_msn_erro.png' />&nbsp;&nbsp;" + data.Mensagem);
+        $("#divErrorDialogo").modal("show");
+    }
+}
+
+</script>
+
